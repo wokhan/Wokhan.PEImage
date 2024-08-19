@@ -3,7 +3,7 @@
 namespace Wokhan.PEImage.PortableExecutable.Native;
 
 [StructLayout(LayoutKind.Explicit)]
-public readonly struct ImportHintNameTableEntry
+public struct ImportHintNameTableEntry
 {
     [FieldOffset(0)]
     /// <summary>
@@ -14,12 +14,13 @@ public readonly struct ImportHintNameTableEntry
     [FieldOffset(2)]
     /// <summary>
     /// An ASCII string that contains the name to import. This is the string that must be matched to the public name in the DLL. This string is case sensitive and terminated by a null byte. 
+    /// Note: storing 256 bytes as this is the maximum length for a null terminated string in a PE image, but not all of them will be used.
     /// </summary>
-    private readonly sbyte _nameFirstByte;
+    private unsafe fixed sbyte _name[256];
 
     public unsafe readonly string GetName()
     {
-        fixed (sbyte* nameptr = &_nameFirstByte)
+        fixed (sbyte* nameptr = _name)
         {
             return new string(nameptr);
         }

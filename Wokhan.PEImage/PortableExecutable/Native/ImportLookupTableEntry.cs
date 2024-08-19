@@ -5,19 +5,8 @@ namespace Wokhan.PEImage.PortableExecutable.Native;
 [StructLayout(LayoutKind.Explicit, Pack = 1)]
 public unsafe readonly struct ImportLookupTableEntry : INullableDataDirectoryEntry
 {
-    // The structure is a reversed bit field, so we have to recompute properly before use
+    // The structure is a bit field, so we have to parse each field according to the specification
     // Exemple with the uint 345237 with the OrdinalNameFlag set to 1 (true):
-    // OrdinalNameFlag (1 bit)
-    // 1010 1001 0010 0010 1010 0000 0000 0001
-    //                                       ^
-    // OrdinalNumber (16 bits)
-    // 1010 1001 0010 0010 1010 0000 0000 0001
-    // ^^^^ ^^^^ ^^^^ ^^^^
-    // HintNameTableRVA (31 bits)
-    // 1010 1001 0010 0010 1010 0000 0000 0001
-    // ^^^^ ^^^^ ^^^^ ^^^^ ^^^^ ^^^^ ^^^^ ^^^
-
-
     // OrdinalNameFlag (1 bit)
     // 1010 1001 0010 0010 1010 0000 0000 0001
     // ^                                      

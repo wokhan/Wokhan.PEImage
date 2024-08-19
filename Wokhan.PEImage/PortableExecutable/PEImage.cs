@@ -43,7 +43,7 @@ public class PEImage
         dosHeaders = reader.Map<DosHeader>(0);
         ntHeaders = reader.Map<NtHeaders>((nint)dosHeaders.e_lfanew);
 
-        if (ntHeaders.Signature != "PE\0\0")
+        if (!ntHeaders.IsValid())
         {
             throw new IOException("The provided image is not a PE image and cannot be parsed.");
         }

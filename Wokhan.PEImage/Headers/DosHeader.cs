@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace Wokhan.PEImage.PortableExecutable.Native;
+namespace Wokhan.PEImage.Headers;
 
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct DosHeader

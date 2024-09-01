@@ -10,6 +10,7 @@
     
     <DnneAddGeneratedBinaryToProject>true</DnneAddGeneratedBinaryToProject>
     <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>
@@ -23,7 +24,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="DNNE" Version="2.0.6" OutputItemType="Analyzer"/>
+    <PackageReference Include="DNNE" Version="2.0.6" OutputItemType="Analyzer" />
   </ItemGroup>
 
   <ItemGroup>

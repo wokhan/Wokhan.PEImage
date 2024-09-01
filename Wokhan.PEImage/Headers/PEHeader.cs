@@ -1,10 +1,9 @@
-﻿using System;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 
-namespace Wokhan.PEImage.PortableExecutable.Native;
+namespace Wokhan.PEImage.Headers;
 
 [StructLayout(LayoutKind.Sequential)]
-public unsafe struct NtHeaders
+public unsafe struct PEHeader
 {
     private fixed sbyte _signature[4]; // Always PE\0\0 for a Windows image
 

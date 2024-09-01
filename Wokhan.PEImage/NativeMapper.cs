@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 
 using Windows.Win32;
 
-namespace Wokhan.PEImage.PortableExecutable;
+namespace Wokhan.PEImage;
 
 public class NativeMapper
 {
@@ -82,7 +82,7 @@ public class NativeMapper
         var bytesRead = new nuint();
         if (!NativeMethods.ReadProcessMemory(SafeHandle, (void*)(ModuleBaseAddress + rva), buffer, len, &bytesRead) || bytesRead != len)
         {
-            throw new Win32Exception($"Failed to read process memory at {ModuleBaseAddress + rva:X16}.");
+            throw new Win32Exception($"Failed to read process memory at {ModuleBaseAddress + rva:X16}. {bytesRead} byte(s) read over {len}.");
         }
     }
 

@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace Wokhan.PEImage.PortableExecutable.Native;
+namespace Wokhan.PEImage.Sections.idata;
 
 [StructLayout(LayoutKind.Explicit, Pack = 1)]
 public unsafe readonly struct ImportLookupTableEntry : INullableDataDirectoryEntry
@@ -27,12 +27,12 @@ public unsafe readonly struct ImportLookupTableEntry : INullableDataDirectoryEnt
     ///// PE32 only: If this bit is set, import by ordinal. Otherwise, import by name. Bit is masked as 0x80000000 for PE32, 0x8000000000000000 for PE32+. 
     ///// For PE32+ bits 62-31 must be zero. 
     ///// </summary>
-    public readonly bool OrdinalNameFlag32 => (_data32 >> 31) != 0;
+    public readonly bool OrdinalNameFlag32 => _data32 >> 31 != 0;
 
     ///// <summary>
     ///// PE32Plus only: If this bit is set, import by ordinal. Otherwise, import by name. Bit is masked as 0x80000000 for PE32, 0x8000000000000000 for PE32+. 
     ///// </summary>
-    public readonly bool OrdinalNameFlag64 => (_data64 >> 63) != 0;
+    public readonly bool OrdinalNameFlag64 => _data64 >> 63 != 0;
 
     ///// <summary>
     ///// A 16-bit ordinal number. This field is used only if the Ordinal/Name Flag bit field is 1 (import by ordinal). Bits 30-15 or 62-15 must be 0. 

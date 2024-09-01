@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace Wokhan.PEImage.PortableExecutable.Native;
+namespace Wokhan.PEImage.Sections.idata;
 
 [StructLayout(LayoutKind.Explicit)]
 public struct ImportHintNameTableEntry
@@ -18,11 +18,14 @@ public struct ImportHintNameTableEntry
     /// </summary>
     private unsafe fixed sbyte _name[256];
 
-    public unsafe readonly string GetName()
+    public unsafe readonly string Name
     {
-        fixed (sbyte* nameptr = _name)
+        get
         {
-            return new string(nameptr);
+            fixed (sbyte* nameptr = _name)
+            {
+                return new string(nameptr);
+            }
         }
     }
 }

@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 
-namespace Wokhan.PEImage.PortableExecutable.Native;
+namespace Wokhan.PEImage.Sections.idata;
 
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
-public readonly struct ImportDirectory : INullableDataDirectoryEntry
+public readonly struct ImportDirectoryEntry : INullableDataDirectoryEntry
 {
     /// <summary>
     /// The RVA of the import lookup table. This table contains a name or ordinal for each import. (The name "Characteristics" is used in Winnt.h, but no longer describes this field.) 
@@ -49,7 +49,7 @@ public readonly struct ImportDirectory : INullableDataDirectoryEntry
 
             var hintNameEntry = mapper.Map<ImportHintNameTableEntry>(entry.HintNameTableRVA);
 
-            string methodName = (is64bits && entry.OrdinalNameFlag64) || entry.OrdinalNameFlag32 ? string.Empty: hintNameEntry.GetName();
+            string methodName = is64bits && entry.OrdinalNameFlag64 || entry.OrdinalNameFlag32 ? string.Empty : hintNameEntry.Name;
 
             var address = is64bits ? addressEntries[i].SymbolAddress64 : addressEntries[i].SymbolAddress32;
 

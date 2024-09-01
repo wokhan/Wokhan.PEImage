@@ -1,12 +1,13 @@
-﻿using System;
-using System.Reflection.PortableExecutable;
+﻿using System.Reflection.PortableExecutable;
 using System.Runtime.InteropServices;
 
-namespace Wokhan.PEImage.PortableExecutable.Native;
+using Wokhan.PEImage.Headers.Directories;
+
+namespace Wokhan.PEImage.Headers;
 
 
 [StructLayout(LayoutKind.Explicit, Pack = 1)]
-public unsafe struct OptionalHeader
+public readonly unsafe struct OptionalHeader
 {
     /// <summary>
     /// The unsigned integer that identifies the state of the image file. The most common number is 0x10B, which identifies it as a normal executable file. 0x107 identifies it as a ROM image, and 0x20B identifies it as a PE32+ executable. 
@@ -201,26 +202,26 @@ public unsafe struct OptionalHeader
     public readonly ulong SizeOfHeapCommit => ImageMagic == PEMagic.PE32 ? _sizeOfHeapCommit32 : _sizeOfHeapCommit64;
 
     [FieldOffset(88)]
-    private readonly uint LoaderFlags32;
+    private readonly uint _loaderFlags32;
 
     [FieldOffset(104)]
-    private readonly uint LoaderFlags64;
+    private readonly uint _loaderFlags64;
 
     /// <summary>
     /// Reserved, must be zero.
     /// </summary>
-    public readonly uint LoaderFlags => ImageMagic == PEMagic.PE32 ? LoaderFlags32 : LoaderFlags64;
+    public readonly uint LoaderFlags => ImageMagic == PEMagic.PE32 ? _loaderFlags32 : _loaderFlags64;
 
     [FieldOffset(92)]
-    private readonly uint NumberOfRvaAndSizes32;
+    private readonly uint _numberOfRvaAndSizes32;
 
     [FieldOffset(108)]
-    private readonly uint NumberOfRvaAndSizes64;
+    private readonly uint _numberOfRvaAndSizes64;
 
     /// <summary>
     /// PE32: The number of data-directory entries in the remainder of the optional header. Each describes a location and size.
     /// </summary>
-    public readonly uint NumberOfRvaAndSizes => ImageMagic == PEMagic.PE32 ? NumberOfRvaAndSizes32 : NumberOfRvaAndSizes64;
+    public readonly uint NumberOfRvaAndSizes => ImageMagic == PEMagic.PE32 ? _numberOfRvaAndSizes32 : _numberOfRvaAndSizes64;
 
     #endregion
 

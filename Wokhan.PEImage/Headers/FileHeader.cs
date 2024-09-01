@@ -2,7 +2,7 @@
 using System.Reflection.PortableExecutable;
 using System.Runtime.InteropServices;
 
-namespace Wokhan.PEImage.PortableExecutable.Native;
+namespace Wokhan.PEImage.Headers;
 
 [StructLayout(LayoutKind.Sequential)]
 public readonly struct FileHeader

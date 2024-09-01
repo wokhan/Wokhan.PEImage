@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace Wokhan.PEImage.PortableExecutable.Native;
+namespace Wokhan.PEImage.Sections.idata;
 
 [StructLayout(LayoutKind.Explicit, Pack = 1)]
 public readonly struct ImportAddressTableEntry

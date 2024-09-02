@@ -1,40 +1,50 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
 
 namespace Wokhan.PEImage.Sections.idata;
 
+/// <summary>
+/// Represents an entry in the Import Directory, which contains information about the imported functions in a PE file.
+/// This struct includes details such as the import lookup table, timestamp, forwarder chain, DLL name, and import address table.
+/// </summary>
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
 public readonly struct ImportDirectoryEntry : INullableDataDirectoryEntry
 {
     /// <summary>
-    /// The RVA of the import lookup table. This table contains a name or ordinal for each import. (The name "Characteristics" is used in Winnt.h, but no longer describes this field.) 
+    /// Relative Virtual Address (RVA) of the import lookup table, which contains names or ordinals for each import.
     /// </summary>
     public readonly uint ImportLookupTableRVA;
 
     private readonly uint _timeDateStamp;
 
     /// <summary>
-    /// The stamp that is set to zero until the image is bound. After the image is bound, this field is set to the time/data stamp of the DLL. 
+    /// Timestamp set to zero until the image is bound. After binding, it is set to the DLL's timestamp.
     /// </summary>
     public readonly DateTime TimeDateStamp => DateTime.FromFileTime(_timeDateStamp);
 
     /// <summary>
-    /// The index of the first forwarder reference. 
+    /// Index of the first forwarder reference.
     /// </summary>
     public readonly uint ForwarderChain;
 
     /// <summary>
-    /// The address of an ASCII string that contains the name of the DLL. This address is relative to the image base. 
+    /// Relative address of an ASCII string containing the DLL name.
     /// </summary>
     public readonly uint NameRVA;
 
     /// <summary>
-    /// The RVA of the import address table. The contents of this table are identical to the contents of the import lookup table until the image is bound. 
+    /// RVA of the import address table, which mirrors the import lookup table until the image is bound.
     /// </summary>
     public readonly uint ImportAddressTableRVA;
 
+    /// <summary>
+    /// Retrieves the imported functions from the import directory.
+    /// </summary>
+    /// <param name="mapper">The native memory mapper.</param>
+    /// <param name="moduleBaseAddress">The base address of the module in memory.</param>
+    /// <param name="is64bits">Indicates if the image is 64-bit.</param>
+    /// <returns>A collection of tuples containing DLL name, method name, hint, and address.</returns>
     public readonly IEnumerable<(string DllName, string MethodName, ushort Hint, nint Address)> GetImportedFunctions(NativeMapper mapper, nint moduleBaseAddress, bool is64bits)
     {
         var dllName = mapper.ReadStringANSI((nint)NameRVA);
@@ -57,10 +67,19 @@ public readonly struct ImportDirectoryEntry : INullableDataDirectoryEntry
         }
     }
 
+    /// <summary>
+    /// Retrieves the name of the import directory entry.
+    /// </summary>
+    /// <param name="reader">The native memory reader.</param>
+    /// <returns>The name of the import directory entry as a string.</returns>
     internal unsafe readonly string GetName(NativeMapper reader)
     {
         return reader.ReadStringANSI((nint)NameRVA);
     }
 
+    /// <summary>
+    /// Checks if the import directory entry is null.
+    /// </summary>
+    /// <returns>True if the import lookup table RVA is 0, otherwise false.</returns>
     public readonly bool IsNull() => ImportLookupTableRVA == 0;
 }

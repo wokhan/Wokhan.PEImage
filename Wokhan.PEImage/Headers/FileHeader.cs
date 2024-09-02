@@ -8,39 +8,39 @@ namespace Wokhan.PEImage.Headers;
 public readonly struct FileHeader
 {
     /// <summary>
-    /// The number that identifies the type of target machine. 
+    /// Specifies the type of target machine.
     /// </summary>
     public readonly Machine Machine;
 
     /// <summary>
-    /// The number of sections. This indicates the size of the section table, which immediately follows the headers. 
+    /// Indicates the number of sections, which determines the size of the section table following the headers.
     /// </summary>
     public readonly ushort NumberOfSections;
 
     private readonly uint _timeDateStamp;
 
     /// <summary>
-    /// The low 32 bits of the number of seconds since 00:00 January 1, 1970 (a C run-time time_t value), which indicates when the file was created. 
+    /// Represents the low 32 bits of the seconds elapsed since January 1, 1970 (Unix epoch), indicating the file creation time.
     /// </summary>
     public readonly DateTime TimeDateStamp => DateTime.FromFileTime(_timeDateStamp);
 
     /// <summary>
-    /// The file offset of the COFF symbol table, or zero if no COFF symbol table is present. This value should be zero for an image because COFF debugging information is deprecated. 
+    /// Points to the COFF symbol table's file offset, or zero if it doesn't exist. This should be zero for images as COFF debugging info is outdated.
     /// </summary>
     public readonly uint PointerToSymbolTable;
 
     /// <summary>
-    /// The number of entries in the symbol table. This data can be used to locate the string table, which immediately follows the symbol table. This value should be zero for an image because COFF debugging information is deprecated. 
+    /// Denotes the number of entries in the symbol table, which helps locate the string table that follows. This should be zero for images as COFF debugging info is outdated.
     /// </summary>
     public readonly uint NumberOfSymbols;
 
     /// <summary>
-    /// The size of the optional header, which is required for executable files but not for object files. This value should be zero for an object file. For a description of the header format, see <see cref="OptionalHeader"/> (Image Only). 
+    /// Defines the size of the optional header, necessary for executables but not for object files. This should be zero for object files. Refer to <see cref="OptionalHeader"/> for the format description (Image Only).
     /// </summary>
     public readonly ushort SizeOfOptionalHeader;
 
     /// <summary>
-    /// The flags that indicate the attributes of the file.
+    /// Describes the file's attributes through various flags.
     /// </summary>
     public readonly Characteristics Characteristics;
 }

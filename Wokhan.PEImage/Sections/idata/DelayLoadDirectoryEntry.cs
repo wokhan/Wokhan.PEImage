@@ -1,7 +1,9 @@
 ﻿namespace Wokhan.PEImage.Sections.idata;
 
 /// <summary>
-/// https://learn.microsoft.com/en-us/windows/win32/debug/pe-format#the-delay-load-directory-table
+/// Represents the Delay-Load Directory Table, which contains information for delay-loading DLLs.
+/// Delay-loading allows an application to defer the loading of a DLL until it is actually needed,
+/// which can improve startup performance and reduce memory usage.
 /// </summary>
 public struct DelayLoadDirectoryEntry : INullableDataDirectoryEntry
 {

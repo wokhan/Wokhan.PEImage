@@ -40,15 +40,22 @@ namespace Wokhan.PEImage
         /// </summary>
         public SectionTableEntry[] Sections { get; private set; }
 
+
+        private IList<(string DllName, string MethodName, nint RVA, nint Address)>? _exports = null;
+
         /// <summary>
         /// Gets the list of exported functions from the PE image.
         /// </summary>
-        public IList<(string DllName, string MethodName, nint RVA, nint Address)> Exports { get; private set; }
+        public IList<(string DllName, string MethodName, nint RVA, nint Address)> Exports => _exports ??= LoadExports();
+
+
+        public IList<(string DllName, string MethodName, ushort Hint, nint Address)>? _imports { get; private set; }
 
         /// <summary>
         /// Gets the list of imported functions from the PE image.
         /// </summary>
-        public IList<(string DllName, string MethodName, ushort Hint, nint Address)> Imports { get; private set; }
+        public IList<(string DllName, string MethodName, ushort Hint, nint Address)> Imports => _imports ??= LoadImports();
+
 
         /// <summary>
         /// Indicates whether the PE image is 64-bit.
@@ -95,21 +102,31 @@ namespace Wokhan.PEImage
         {
             DosHeaders = mapper.Map<DosHeader>(0);
             PEHeaders = mapper.Map<PEHeader>((nint)DosHeaders.PEHeaderAddress);
-            Sections = mapper.MapArray<SectionTableEntry>((nint)DosHeaders.PEHeaderAddress + sizeof(PEHeader), PEHeaders.FileHeader.NumberOfSections);
 
             if (!PEHeaders.IsValid())
             {
                 throw new IOException("The provided image is not a PE image and cannot be parsed.");
             }
 
-            var exportDirectory = PEHeaders.OptionalHeader.DataDirectories.ExportTable.GetSingle(mapper);
-            var importDirectoryEntries = PEHeaders.OptionalHeader.DataDirectories.ImportTable.GetAllEntries(mapper);
+            Sections = mapper.MapArray<SectionTableEntry>((nint)DosHeaders.PEHeaderAddress + sizeof(PEHeader), PEHeaders.FileHeader.NumberOfSections);
+            
             var resourceDirectory = PEHeaders.OptionalHeader.DataDirectories.ResourceTable.GetSingle(mapper);
 
-            Exports = exportDirectory.GetExportedFunctions(mapper, moduleBaseAddress).ToList();
-
             is64bits = PEHeaders.OptionalHeader.ImageMagic == ReflectionPE.PEMagic.PE32Plus;
-            Imports = importDirectoryEntries.SelectMany(dir => dir.GetImportedFunctions(mapper, moduleBaseAddress, is64bits)).ToList();
+        }
+
+
+        private IList<(string DllName, string MethodName, nint RVA, nint Address)> LoadExports()
+        {
+            var exportDirectory = PEHeaders.OptionalHeader.DataDirectories.ExportTable.GetSingle(mapper);
+            return exportDirectory.GetExportedFunctions(mapper, moduleBaseAddress).ToList();
+        }
+
+
+        private IList<(string DllName, string MethodName, ushort Hint, nint Address)> LoadImports()
+        {
+            var importDirectoryEntries = PEHeaders.OptionalHeader.DataDirectories.ImportTable.GetAllEntries(mapper);
+            return importDirectoryEntries.SelectMany(dir => dir.GetImportedFunctions(mapper, moduleBaseAddress, is64bits)).ToList();
         }
     }
 }

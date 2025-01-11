@@ -1,0 +1,55 @@
+name: Build and publish to Nuget
+env:
+    PROJECT_NAME: Wokhan.PEImage
+    PROJECT_FILE: Wokhan.PEImage\Wokhan.PEImage.csproj
+
+on:
+  push:
+    tags: [ 'v*' ]
+
+jobs:
+  release:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 7.0.x
+
+    - name: Setup msbuild
+      uses: microsoft/setup-msbuild@v2
+
+    #Source: https://dusted.codes/github-actions-for-dotnet-core-nuget-packages#drive-nuget-version-from-git-tags
+    - name: Set Nuget package version
+      shell: bash
+      run: |
+        arrTag=(${GITHUB_REF//\// })
+        VERSION="${arrTag[2]}"
+        VERSION="${VERSION//v}"
+        echo "PACKAGE_VERSION=$VERSION" >> $GITHUB_ENV
+    
+    # Restore packages independently (for the whole solution) to ensure properties are created by GeneratePathProperties ; if not they are generated but too late
+    - name: Restore Nuget packages
+      run: msbuild -t:Restore
+
+    - name: Pack
+      run: msbuild ${{ env.PROJECT_FILE }} -p:Configuration=Release -p:PackageVersion=${{ env.PACKAGE_VERSION }} -t:Pack
+
+    - name: Publish
+      run: dotnet nuget push ${{ env.PROJECT_NAME }}/bin/Release/${{ env.PROJECT_NAME }}.${{ env.PACKAGE_VERSION }}.nupkg --api-key ${{ secrets.nuget_apikey }} --source https://api.nuget.org/v3/index.json
+      
+    - name: Generate documentation (1/3 - retrieve global tool)
+      run: dotnet tool install xmldocmd -g
+
+    - name: Generate documentation (2/3 - generate)
+      run: xmldocmd ${{ env.PROJECT_NAME }}/bin/Release/${{ env.PROJECT_NAME }}.dll docs/generated --source https://github.com/${{ github.repository }} --clean
+
+    - name: Generate documentation (3/3 - commit)
+      uses: EndBug/add-and-commit@v9.1.4
+      with:
+        add: docs
+        message: Automated documentation update
+        default-author: github_actions

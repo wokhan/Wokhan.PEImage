@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net7.0-windows</TargetFramework>
     <Platforms>AnyCPU</Platforms>
     <Nullable>Enable</Nullable>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -9,6 +9,33 @@
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
 
+  <PropertyGroup Label="Nuget" Condition="'$(Configuration)' == 'Release'">
+    <Product>Wokhan.PEImage</Product>
+    <Version>1.0.0</Version>
+    <RepositoryUrl>https://github.com/wokhan/Wokhan.PEImage.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <DebugType>portable</DebugType>
+    <IsPackable>true</IsPackable>
+    <IncludeSymbols>true</IncludeSymbols>
+    <IncludeSource>false</IncludeSource>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+    <PackageId>Wokhan.PEImage</PackageId>
+    <PackageIcon>logo.png</PackageIcon>
+    <PackageTags>.NETCore .NET PEImage PortableExecutable Parser</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageProjectUrl>https://github.com/wokhan/Wokhan.PEImage</PackageProjectUrl>
+    <PackageReleaseNotes>Please check GitHub repository for details.</PackageReleaseNotes>
+    <Description>A blittable-structs based PE Image in-memory parser.</Description>
+    <Authors>Jérôme Saliba</Authors>
+    <Copyright>Copyright (c) 2024-2025 Jérôme Saliba (@wokhan)</Copyright>
+    <Company>Wokhan Solutions</Company>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+  </PropertyGroup>
+  
   <ItemGroup>
     <PackageReference Include="Microsoft.Windows.CsWin32" Version="0.3.106" PrivateAssets="All" />
     <PackageReference Include="NuGetizer" Version="1.2.2" PrivateAssets="All">
@@ -16,4 +43,8 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="Assets\logo.png" CopyToOutputDirectory="PreserveNewest" Pack="True" PackagePath="/" />
+  </ItemGroup>
+  
 </Project>
